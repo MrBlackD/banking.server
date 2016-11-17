@@ -3,11 +3,13 @@ package app.document;
 
 import app.account.AccountModel;
 import app.account.AccountRepository;
-import app.client.Client;
 import app.client.ClientModel;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Admin on 13.11.2016.
@@ -88,26 +90,32 @@ public class DocumentModel {
         this.date = date;
     }
 
+
     public void execute(AccountRepository accountRepository) throws Exception {
         AccountModel from=this.from;
         AccountModel to=this.to;
         if(from==null||to==null)
             throw new Exception("Wrong from/to account");
+        List<AccountModel> list=new ArrayList<>();
+        list.add(from);
+        list.add(to);
         from.setBalance(from.getBalance()-this.amount);
-        accountRepository.save(from);
         to.setBalance(to.getBalance()+this.amount);
-        accountRepository.save(to);
+        accountRepository.save(list);
     }
+
 
     public void revert(AccountRepository accountRepository) throws Exception {
         AccountModel from=this.from;
         AccountModel to=this.to;
         if(from==null||to==null)
             throw new Exception("Wrong from/to account");
+        List<AccountModel> list=new ArrayList<>();
+        list.add(from);
+        list.add(to);
         to.setBalance(to.getBalance()-this.amount);
-        accountRepository.save(to);
         from.setBalance(from.getBalance()+this.amount);
-        accountRepository.save(from);
+        accountRepository.save(list);
 
     }
 }
