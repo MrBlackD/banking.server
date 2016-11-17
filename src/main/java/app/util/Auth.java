@@ -1,9 +1,11 @@
 package app.util;
 
+import app.authLogger.AuthLoggerModel;
 import app.authLogger.AuthLoggerRepository;
 import app.client.ClientModel;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 /**
  * Created by Admin on 12.11.2016.
@@ -16,7 +18,8 @@ public class Auth {
     public static boolean authCheck(String accesstoken,AuthLoggerRepository authLoggerRepository){
         System.out.println(accesstoken);
         System.out.println(authLoggerRepository.findByAccessToken(accesstoken));
-        if(authLoggerRepository.findByAccessToken(accesstoken)==null)
+        AuthLoggerModel repository=authLoggerRepository.findByAccessToken(accesstoken);
+        if(repository==null)
             return false;
         return true;
     }

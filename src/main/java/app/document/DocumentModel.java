@@ -29,6 +29,7 @@ public class DocumentModel {
     private float amount;
     private long date;
 
+
     public long getId() {
         return id;
     }
@@ -87,18 +88,22 @@ public class DocumentModel {
         this.date = date;
     }
 
-    public void execute(AccountRepository accountRepository) {
+    public void execute(AccountRepository accountRepository) throws Exception {
         AccountModel from=this.from;
         AccountModel to=this.to;
+        if(from==null||to==null)
+            throw new Exception("Wrong from/to account");
         from.setBalance(from.getBalance()-this.amount);
         accountRepository.save(from);
         to.setBalance(to.getBalance()+this.amount);
         accountRepository.save(to);
     }
 
-    public void revert(AccountRepository accountRepository){
+    public void revert(AccountRepository accountRepository) throws Exception {
         AccountModel from=this.from;
         AccountModel to=this.to;
+        if(from==null||to==null)
+            throw new Exception("Wrong from/to account");
         to.setBalance(to.getBalance()-this.amount);
         accountRepository.save(to);
         from.setBalance(from.getBalance()+this.amount);
